@@ -44,75 +44,111 @@ class LoginAction
         $this->response = $response;
 
         // TODO: write login action code
-        
-        // 
+
         $request = $this->getInputs();
+       
         
-        // nếu tồn tại request user
+        // nếu tồn tại request
         if(isset($request) && !empty($request))
         {   
+
             // mếu tồn tại cookie thì không cho tài khoản đăng nhập
-            if(!isset($_COOKIE['lock']))
-            {
+            
+            if(!isset($_COOKIE['lock'])){
+
                 // kiểm tra nếu username trống và thuộc định dạng cho phép
-                if(!empty($request['username']) && preg_match('/^[\w\'.-]{3,20}$/i', $request['username']))
-                {
+                if(!empty($request['username']) && preg_match('/^[\w\'.-]{3,20}$/i', $request['username'])){
+
                     $username = $request['username'];
-                }else
-                {
+
+                }else{
+
                     $username = "";
+
                     $_SESSION['error_user'] = " Tên đăng nhập không thuốc định dang cho phép hoặc quá ngắn .";
 
+                    // chuyển trang
+                    $this->redirectTo('/login');
+
                 }
+
                 // kiểm tra nếu passwor không trống và thuộc định dạng cho phép
-                if(!empty($request['password']) && preg_match('/^[\w\'.-]{8,20}$/i', $request['password']))
-                {
+                if(!empty($request['password']) && preg_match('/^[\w\'.-]{8,20}$/i', $request['password'])){
+
                     // hash password
                     $password = md5($request['password']);
-                }else
-                {
+                    $this->redirectTo('/login');
+
+                }else{
+
                     $password = "";
                     $_SESSION['error_passwor'] = "Mật khẩu không đúng định dạng ( ít nhất 8 ký tự ) .";
 
+                    $this->redirectTo('/login');
                 }
+
+
+                if(isset($request['remember-me'])){
+
+                    $remember = $request['remember-me'];
+                   
+                }
+
+
                 // kiểm tra  username và passwor  có tồn tại trong csdl
                 $user = $this->getUserByUsername($username,$password);
 
+                // gán trạng thái đăng nhập của user
                 if(!isset($_SESSION['status']))
                 {
                     $_SESSION['status'] = 0;
                 }else{
                     $_SESSION['status']= $_SESSION['status'];
                 }
+
+
                 // nếu username và passwod đúng 
                 
                 if(!empty($user))
                 {
-
+                    // lưu thông tin user vào biến session 
                     $_SESSION['user'] = $user;
+
                     unset($_SESSION['status']);
+
+                    // lưu lại thông tin tài khoản khi người dùng kích vào Remember me
+                    if(isset($remember))
+                    {
+                       setcookie('username',$request['username'],time()+86400);
+                       setcookie('password',$request['password'],time()+86400);
+                    }
+
+                    $_SESSION['success'] = " Cám ơn bạn đã đăng nhập";
+
 
                 }else
                 {
-                    echo $_SESSION['status'] = $_SESSION['status'] +1;
+                    $_SESSION['status'] = $_SESSION['status'] +1;
 
+                    // nếu user đăng nhập quá 5 lần
                     if($_SESSION['status'] >5)
                     {
-                        //setcookie('lock','lock',time()+900);
+                        // khóa sau 15p
+                        setcookie('lock','lock',time()+900);
+
                     }
-                    hea
+                    // chuyển trang
+                    $this->redirectTo('/login');
+                    
                 }  
                 var_dump($user);
 
             }else{
                 $_SESSION['time'] = "Xin lỗi tài khoản của bạn đã bị khóa .Hãy đăng nhập lại sau 15p";
+
+                $this->redirectTo('/login');
+
             }
-        
-
-           //setcookie('lock','lock',time()-900);
-
-    }else{
-
     }
 
 }

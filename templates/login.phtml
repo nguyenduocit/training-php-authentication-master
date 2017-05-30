@@ -54,21 +54,37 @@ body {
 
       <form class="form-signin" method="post">
         <h2 class="form-signin-heading">Please sign in</h2>
-        <?php echo isset($_SESSION['time'])?"<p style='color: red;'>".$_SESSION['time']."</p>":"";?>
+
+        <?php  echo isset($_SESSION['success'])?"<p style='color:#007700;'>".$_SESSION['success']."</p>":"";?>
+
+        <?php unset($_SESSION['success'])?>
+
+        <?php  echo isset($_SESSION['time'])?"<p style='color: red;'>".$_SESSION['time']."</p>":"";?>
+
         <?php unset($_SESSION['time'])?>
+
         <label for="inputUsername" class="sr-only">Username</label>
-        <input type="text" name="username" id="inputUsername" class="form-control" placeholder="Username" required autofocus>
+
+        <input type="text" name="username" id="inputUsername" class="form-control" placeholder="Username" value="<?php echo isset($_COOKIE['username'])? $_COOKIE['username']:"";?>" required autofocus>
+
         <?php echo isset($_SESSION['error_user'])? "<p style='color: red;'>".$_SESSION['error_user']."</p>" : ""; ?>
+
         <?php unset($_SESSION['error_user']) ?>
+
         <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
+
+        <input type="password" value="<?php echo isset($_COOKIE['password'])? $_COOKIE['password']:"";?>" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
+
         <?php echo isset($_SESSION['error_passwor'])? "<p style='color: red;' >".$_SESSION['error_passwor']."</p>" : ""; ?>
+
         <?php unset($_SESSION['error_passwor']) ?>
+
         <div class="checkbox">
           <label>
-            <input type="checkbox" value="remember-me"> Remember me
+            <input type="checkbox" name="remember-me" value="remember-me"> Remember me
           </label>
         </div>
+        
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
         <?php /* input type="hidden" name="<?= $csrf['name'] ?>" value="<?= $csrf['value'] ?>"> */ ?>
       </form>
