@@ -77,7 +77,7 @@ class LoginAction
 
                     // hash password
                     $password = md5($request['password']);
-                    $this->redirectTo('/login');
+                    
 
                 }else{
 
@@ -125,6 +125,9 @@ class LoginAction
 
                     $_SESSION['success'] = " Cám ơn bạn đã đăng nhập";
 
+                    // chuyển trang 
+                    
+                    $this->redirectTo('/login');
 
                 }else
                 {
@@ -141,17 +144,16 @@ class LoginAction
                     $this->redirectTo('/login');
                     
                 }  
-                var_dump($user);
-
+             
             }else{
                 $_SESSION['time'] = "Xin lỗi tài khoản của bạn đã bị khóa .Hãy đăng nhập lại sau 15p";
 
                 $this->redirectTo('/login');
 
             }
-    }
+    	}
 
-}
+	}
 
 
     /**
